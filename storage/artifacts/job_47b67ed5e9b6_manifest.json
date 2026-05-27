@@ -1,0 +1,51 @@
+{
+  "concept_query": "Why do atoms form covalent bonds?",
+  "domain_topic": "Chemistry",
+  "total_duration_secs": 50.0,
+  "production_cost_usd": 0.02,
+  "generated_at": "2026-05-27T13:33:32.168275Z",
+  "timeline": [
+    {
+      "timestamp_start": 0.0,
+      "timestamp_end": 15.0,
+      "title": "The Octet Rule Goal",
+      "voiceover_script": "Atoms strive to reach stability. For most atoms, stability means having eight electrons in their outermost valence shell - just like noble gases.",
+      "visual_elements": [
+        "Bohr model showing valence electrons",
+        "Highlighting empty slots in outer electron shell",
+        "Noble gas neon blinking as stable standard"
+      ]
+    },
+    {
+      "timestamp_start": 15.0,
+      "timestamp_end": 35.0,
+      "title": "Sharing is Caring",
+      "voiceover_script": "When non-metal atoms have similar electronegativities, neither wants to lose electrons. Instead, they share valence electrons, creating a mutual electrostatic attraction between their nuclei and the shared pair.",
+      "visual_elements": [
+        "Two hydrogen atoms approaching each other",
+        "Overlapping electron shells forming a shared pair",
+        "Attractive force vectors between nuclei and electrons"
+      ]
+    },
+    {
+      "timestamp_start": 35.0,
+      "timestamp_end": 50.0,
+      "title": "Energy Stabilization",
+      "voiceover_script": "By sharing electrons, atoms lower their potential energy to a minimum. The resulting dynamic overlap is what we call a stable covalent bond.",
+      "visual_elements": [
+        "Energy graph dipping to minimum potential energy state",
+        "Completed stable H2 molecule icon with bond shown"
+      ]
+    }
+  ],
+  "audio_file_path": "E:\\coding test\\ Coding Challenge Growtrics\\storage\\artifacts\\job_47b67ed5e9b6.mp4",
+  "meta_tags": {
+    "renderer": "local_pillow_moviepy",
+    "llm_used": false,
+    "tts_used": false,
+    "video_codec": "libx264",
+    "resolution": "1280x720",
+    "fps": 24,
+    "note": "Full LLM+TTS integration recommended for production. Use GPT-4 Vision for semantic validation and Runway/Sora for animated visuals."
+  }
+}

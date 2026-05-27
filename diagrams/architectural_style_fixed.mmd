@@ -1,33 +1,52 @@
 flowchart TB
-    subgraph api [API Layer]
-        Router[router.py]
-        Schemas[schemas.py]
-        Deps[dependencies.py]
-    end
+  %% Architectural Style - Hexagonal / Ports-and-Adapters
+  subgraph API_LAYER["API Layer"]
+    direction TB
+    dep[dependencies.py]
+    sch[schemas.py]
+    router[router.py]
+  end
 
-    subgraph core [Domain / Application]
-        Orch[VideoJobOrchestrator]
-        Models[VideoJob / JobStatus / Manifest]
-        Ex[exceptions.py]
-    end
+  subgraph DOMAIN["Domain / Application"]
+    direction TB
+    exc[exceptions.py]
+    models[VideoJob\nJobStatus\nVideoArtifactManifest]
+    orch[VideoJobOrchestrator]
+  end
 
-    subgraph ports [Ports - interfaces]
-        IRepo[IJobRepository]
-        IEngine[IMediaGenerationEngine]
-    end
+  subgraph PORTS["Ports - Interfaces"]
+    direction LR
+    repoPort[IJobRepository]
+    enginePort[IMediaGenerationEngine]
+  end
 
-    subgraph infra [Infrastructure Adapters]
-        MemRepo[InMemoryJobRepository]
-        Engine[StructuredMediaEngine]
-        Renderer[video_renderer.py]
-    end
+  subgraph ADAPTERS["Infrastructure Adapters"]
+    direction LR
+    inmem[InMemoryJobRepository]
+    structured[StructuredMediaEngine]
+    renderer[video_renderer.py]
+  end
 
-    Client --> Router
-    Router --> Orch
-    Orch --> IRepo
-    Orch --> IEngine
-    IRepo --> MemRepo
-    IEngine --> Engine
-    Engine --> Renderer
-    MemRepo --> RAM[(In-memory dict)]
-    Renderer --> FS[(storage/artifacts/*.mp4 + *.json)]
+  subgraph STORAGE["Storage / Infra"]
+    direction LR
+    memStore[(In-memory dict)]
+    artifacts[(storage/artifacts/*.mp4 + *.json)]
+    cfg[Config / Settings / Logging]
+  end
+
+  %% Connections
+  router --> orch
+  orch --> models
+  orch --> repoPort
+  orch --> enginePort
+
+  repoPort --> inmem
+  enginePort --> structured
+  structured --> renderer
+
+  inmem --> memStore
+  renderer --> artifacts
+  orch --> cfg
+
+  classDef layer fill:#f8f9fa,stroke:#333,stroke-width:1px;
+  class API_LAYER,DOMAIN,PORTS,ADAPTERS,STORAGE layer;

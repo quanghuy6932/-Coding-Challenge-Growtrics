@@ -1,0 +1,52 @@
+flowchart TB
+  %% Architectural Style - Hexagonal / Ports-and-Adapters
+  subgraph API_LAYER["API Layer"]
+    direction TB
+    dep[dependencies.py]
+    sch[schemas.py]
+    router[router.py]
+  end
+
+  subgraph DOMAIN["Domain / Application"]
+    direction TB
+    exc[exceptions.py]
+    models[VideoJob\nJobStatus\nVideoArtifactManifest]
+    orch[VideoJobOrchestrator]
+  end
+
+  subgraph PORTS["Ports - Interfaces"]
+    direction LR
+    repoPort[IJobRepository]
+    enginePort[IMediaGenerationEngine]
+  end
+
+  subgraph ADAPTERS["Infrastructure Adapters"]
+    direction LR
+    inmem[InMemoryJobRepository]
+    structured[StructuredMediaEngine]
+    renderer[video_renderer.py]
+  end
+
+  subgraph STORAGE["Storage / Infra"]
+    direction LR
+    memStore[(In-memory dict)]
+    artifacts[(storage/artifacts/*.mp4 + *.json)]
+    cfg[Config / Settings / Logging]
+  end
+
+  %% Connections
+  router --> orch
+  orch --> models
+  orch --> repoPort
+  orch --> enginePort
+
+  repoPort --> inmem
+  enginePort --> structured
+  structured --> renderer
+
+  inmem --> memStore
+  renderer --> artifacts
+  orch --> cfg
+
+  classDef layer fill:#f8f9fa,stroke:#333,stroke-width:1px;
+  class API_LAYER,DOMAIN,PORTS,ADAPTERS,STORAGE layer;

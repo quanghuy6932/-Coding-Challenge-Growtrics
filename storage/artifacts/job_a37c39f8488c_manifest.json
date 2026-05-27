@@ -1,0 +1,51 @@
+{
+  "concept_query": "How does the pH scale work?",
+  "domain_topic": "Chemistry",
+  "total_duration_secs": 60.0,
+  "production_cost_usd": 0.015,
+  "generated_at": "2026-05-27T13:26:49.761907Z",
+  "timeline": [
+    {
+      "timestamp_start": 0.0,
+      "timestamp_end": 15.0,
+      "title": "Introduction to pH",
+      "voiceover_script": "Welcome! pH stands for 'potential of Hydrogen'. It is a scale used to specify the acidity or basicity of an aqueous solution.",
+      "visual_elements": [
+        "Title card: What is pH?",
+        "Animated beaker filling with water",
+        "Hydrogen ion (H+) indicator moving"
+      ]
+    },
+    {
+      "timestamp_start": 15.0,
+      "timestamp_end": 40.0,
+      "title": "The Scale Breakdown",
+      "voiceover_script": "The scale ranges from 0 to 14. A pH of 7 is neutral, like pure water. Values below 7 are acidic - they have more hydrogen ions. Values above 7 are basic, or alkaline.",
+      "visual_elements": [
+        "Interactive 0 to 14 color scale display",
+        "Highlighting pH 7 as Neutral (Green)",
+        "Highlighting pH 1 Acid (Red) and pH 14 Base (Purple)"
+      ]
+    },
+    {
+      "timestamp_start": 40.0,
+      "timestamp_end": 60.0,
+      "title": "Logarithmic Nature",
+      "voiceover_script": "The pH scale is logarithmic. Each whole pH value below 7 is ten times more acidic than the next higher value. For example, pH 5 is ten times more acidic than pH 6.",
+      "visual_elements": [
+        "Mathematical formula: pH = -log[H+]",
+        "Magnifying glass zooming into molecular concentration difference"
+      ]
+    }
+  ],
+  "audio_file_path": "E:\\coding test\\ Coding Challenge Growtrics\\storage\\artifacts\\job_a37c39f8488c.mp4",
+  "meta_tags": {
+    "renderer": "local_pillow_moviepy",
+    "llm_used": false,
+    "tts_used": false,
+    "video_codec": "libx264",
+    "resolution": "1280x720",
+    "fps": 24,
+    "note": "Full LLM+TTS integration recommended for production. Use GPT-4 Vision for semantic validation and Runway/Sora for animated visuals."
+  }
+}

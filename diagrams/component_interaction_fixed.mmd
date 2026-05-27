@@ -1,56 +1,30 @@
 sequenceDiagram
-  title Component Interaction — Request Path (cleaned)
-  participant Client
-  participant Router as router.py
-  participant Orch as VideoJobOrchestrator
-  participant Repo as InMemoryJobRepository
-  participant Engine as StructuredMediaEngine
-  participant Renderer as video_renderer.py
+    participant C as Client
+    participant API as router.py
+    participant O as VideoJobOrchestrator
+    participant R as InMemoryJobRepository
+    participant E as StructuredMediaEngine
+    participant V as video_renderer
 
-  Client->>Router: POST /api/v1/videos { query }
-  Router->>Orch: submit_video_request(query)
-  Orch->>Repo: save(job status = SUBMITTED)
-  Router-->>Client: 202 Accepted { job_id }
-  Router->>Orch: BackgroundTask: start_background_generation(job_id)
+    C->>API: POST /api/v1/videos {query}
+    API->>O: submit_video_request(query)
+    O->>R: save(SUBMITTED)
+    API-->>C: 202 + job_id
+    API->>O: BackgroundTask start_background_generation(job_id)
 
-  Orch->>Repo: get_by_id(job_id)
-  Repo-->>Orch: VideoJob (found)
-  Orch->>Orch: transition -> PROCESSING
-  Orch->>Repo: save(update status = PROCESSING)
-
-  loop up to MAX_GENERATION_RETRIES
-    Orch->>Engine: generate_educational_content(query, job_id)
-    Note right of Engine: guardrail + knowledge lookup
-    Engine-->>Orch: VideoArtifactManifest OR raise Exception
-    alt manifest returned
-      Orch->>Renderer: render_manifest_to_video(manifest)
-      Renderer->>Renderer: create slides (PNG)
-      Renderer->>Renderer: assemble MP4 (moviepy)
-      Renderer-->>Orch: mp4_path
-      Orch->>Repo: save(update status = COMPLETED, attach artifact)
-    else exception
-      Orch->>Orch: retry (increment counter)
+    O->>R: get_by_id, save(PROCESSING)
+    loop up to MAX_GENERATION_RETRIES
+        O->>E: generate_educational_content(query, job_id)
+        E->>E: guardrail + knowledge lookup
+        E->>V: render_manifest_to_video (executor)
+        E->>E: write manifest JSON
     end
-  end
+    alt success
+        O->>R: save(COMPLETED + artifact)
+    else failure
+        O->>R: save(FAILED + error_message)
+    end
 
-  alt retries exhausted and failed
-    Orch->>Repo: save(update status = FAILED, error_message)
-  end
-
-  Note over Client,Router: Client polls for status
-  Client->>Router: GET /api/v1/videos/{job_id}
-  Router->>Repo: get_by_id(job_id)
-  Repo-->>Router: VideoJob(status, metadata)
-  Router-->>Client: VideoJobResponse
-
-  alt if status == COMPLETED
-    Client->>Router: GET /api/v1/videos/{job_id}/artifact
-    Router->>Repo: get_by_id(job_id)
-    Repo-->>Router: artifact.path
-    Router->>Renderer: (or directly) read mp4_path from storage
-    Router-->>Client: FileResponse (mp4 stream)
-  else if status == PROCESSING
-    Router-->>Client: 409 Conflict / "still processing"
-  else if status == FAILED
-    Router-->>Client: 500 Internal Server Error / error_message
-  end
+    C->>API: GET /videos/{job_id} (poll)
+    C->>API: GET /videos/{job_id}/artifact
+    API-->>C: MP4 FileResponse
